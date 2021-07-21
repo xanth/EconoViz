@@ -1,75 +1,34 @@
 grammar Clausewitz;
 
-content: 
-   expr+
-   ;
+document: (assignment)*;
 
-expr: 
-   keyval+
-   ;
+assignment: field OPERATOR value;
+field: string | symbol;
 
-keyval:
-   key ('=' | '>' | '<')+ val
-   ;
+value: integer | percent | real | date | string | symbol | map | array;
 
-key: 
-   id_ | attrib
-   ;
+symbol: STRING | INT | SYMBOL;
+string: STRING;
+integer: INT;
+real: REAL;
+date: DATE;
+percent: PCT;
+map: BLOCK_START (assignment)* BLOCK_END;
+array: BLOCK_START value+ BLOCK_END;
 
-val: 
-   id_ | attrib | group
-   ;
+OPERATOR: '=' | '<>' | '>' | '<' | '<=' | '>=' ;
+BLOCK_START: '{';
+BLOCK_END: '}';
 
-attrib: 
-   id_ accessor (attrib| id_)
-   ;
+INT: NEGATION?[0-9]+;
+PCT: NEGATION?[0-9]+'%';
+REAL: NEGATION?[0-9]+'.'[0-9]+;
+DATE: [0-9]+'.'[0-9]+'.'[0-9]+;
+STRING : STRING_DELIM (~('"' | '\\') | '\\' ('"' | '\\'))* STRING_DELIM;
+SYMBOL: [A-Za-z0-9][:@A-Za-z_0-9.%-]*;
 
-accessor: 
-   '.'|'@'|':'
-   ;
+WHITESPACE: [ \t\n\r] + -> skip;
+LINE_COMMENT: '#'~[\r\n]* -> channel(HIDDEN);
 
-group: 
-   '{' (expr* | id_) '}'
-   ;
-
-id_: 
-   IDENTIFIER | STRING | INTEGER
-   ;
-
-IDENTIFIER: 
-   IDENITIFIERHEAD IDENITIFIERBODY*
-   ;
-
-INTEGER: 
-   [+-]? INTEGERFRAG
-   ;
-
-fragment INTEGERFRAG: 
-   [0-9]+
-   ;
-
-fragment IDENITIFIERHEAD: 
-   [a-zA-Z]
-   ;
-
-fragment IDENITIFIERBODY
-   : IDENITIFIERHEAD | [0-9_]
-   ;
-
-STRING: 
-   '"' ~["\r\n]* '"'
-   ;
-
-COMMENT: 
-   '#' ~[\r\n]* -> channel(HIDDEN)
-   ;
-
-SPACE: 
-   [ \t\f] -> channel(HIDDEN)
-   ;
-
-NL: 
-   [\r\n] -> channel(HIDDEN)
-   ;
-
-
+fragment STRING_DELIM: '"';
+fragment NEGATION: '-';

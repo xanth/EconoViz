@@ -14,10 +14,11 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
+    <PackageReference Include="System.Collections" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Antlr4 Update="Clausewitz.g4"/>
+    <Antlr4 Update="Clausewitz.g4" />
   </ItemGroup>
 
 </Project>
